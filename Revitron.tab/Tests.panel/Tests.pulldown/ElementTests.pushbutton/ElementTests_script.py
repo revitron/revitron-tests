@@ -26,7 +26,9 @@ class ElementTests(revitrontests.RevitronTestCase):
 		wall = self.fixture.createWall()
 		t = revitron.Transaction()
 		_(wall).set('Test', 'Value')
+		_(wall).set('Comments', 'Some comment')
 		t.commit()
 		self.assertEquals(_(wall).get('Test'), 'Value')
+		self.assertEquals(_(wall).get('Comments'), 'Some comment')
  
 revitrontests.run(ElementTests)
