@@ -25,11 +25,12 @@ class FilterTests(revitrontests.RevitronTestCase):
 		_(w1).set('test', 'an awesome test wall')
 		_(w2).set('test', 'another awesome test wall')
 		_(w3).set('test', 'and one more wall')
-		t.commit()
+		_(w4).set('Comments', 'test comment')
+  		t.commit()
   
 		f = revitron.Filter
 		toStr = revitrontests.idsToStr		
-  
+		
 		self.assertEquals(toStr([w1.Id, w2.Id]),
             toStr(f().byStringContains('test', 'awesome').noTypes().getElementIds()))
 
@@ -41,8 +42,11 @@ class FilterTests(revitrontests.RevitronTestCase):
 
 		self.assertEquals(toStr([w1.Id, w2.Id, w3.Id]), 
             toStr(f().byStringEndsWith('test', 'wall').noTypes().getElementIds()))
-		
+
 		self.assertEquals(toStr([w3.Id]), 
             toStr(f().byStringEquals('test', 'and one more wall').noTypes().getElementIds()))
+		
+		self.assertEquals(toStr([w4.Id]), 
+            toStr(f().byStringEquals('Comments', 'test comment').noTypes().getElementIds()))
 
 revitrontests.run(FilterTests)
