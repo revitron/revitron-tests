@@ -19,6 +19,14 @@ def runSuite(suite):
 	print(stream.read())
 
 
+def idsToStr(ids):
+    _ids = []
+    for eid in ids:
+        _ids.append(str(eid.IntegerValue))
+    _ids.sort()
+    return ','.join(_ids)
+
+
 class RevitronTestCase(unittest.TestCase):
 	
 	def setUp(self):
