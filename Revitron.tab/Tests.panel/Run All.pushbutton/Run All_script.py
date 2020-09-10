@@ -5,7 +5,7 @@ import glob
 import inspect
 
 dn = os.path.dirname
-sys.path.append(dn(dn(dn(dn(dn(__file__))))))
+sys.path.append(dn(dn(dn(dn(__file__)))))
 
 import revitrontests
 
@@ -14,7 +14,7 @@ __context__ = 'zero-doc'
 testsDir = dn(dn(__file__))
 suite = unittest.TestSuite()
 
-for directory in glob.glob(testsDir + '\*Tests.pushbutton'):
+for directory in glob.glob(testsDir + '\Tests.pulldown\*Tests.pushbutton'):
     sys.path.append(directory)
     for file in glob.glob(directory + '\*Tests_script.py'):
         module = os.path.basename(file).replace('.py', '')
