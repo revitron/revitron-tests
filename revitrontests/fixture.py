@@ -1,6 +1,7 @@
 import pyrevit
 import revitron
 import Autodesk.Revit.UI as rui
+from revitron import _
 
  
 class Fixture:
@@ -26,10 +27,11 @@ class Fixture:
 		return wall
 
 	def createRoom(self):
-		self.createWall([0, 0], [0, 10])
-		self.createWall([0, 0], [10, 0])
-		self.createWall([10, 10], [0, 10])
-		self.createWall([10, 10], [10, 0])
+		halfWall = _(self.createWall([100, 90], [100, 100])).getFromType('Width') / 2
+		self.createWall([0 - halfWall, 0 - halfWall], [0 - halfWall, 10 + halfWall])
+		self.createWall([0 - halfWall, 0 - halfWall], [10 + halfWall, 0 - halfWall])
+		self.createWall([10 + halfWall, 10 + halfWall], [0 - halfWall, 10 + halfWall])
+		self.createWall([10 + halfWall, 10 + halfWall], [10 + halfWall, 0 - halfWall])
 		t = revitron.DB.Transaction(self.doc, 'Add Room')
 		t.Start()
 		room = revitron.DOC.Create.NewRoom(self.level, revitron.DB.UV(4,6))
