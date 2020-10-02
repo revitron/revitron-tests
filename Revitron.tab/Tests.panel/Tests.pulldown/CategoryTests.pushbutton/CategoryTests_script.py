@@ -2,10 +2,6 @@ import revitron
 import unittest
 import os 
 import sys
-
-dn = os.path.dirname
-sys.path.append(dn(dn(dn(dn(dn(__file__))))))
-
 import revitrontests
 
 __context__ = 'zero-doc'
