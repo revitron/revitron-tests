@@ -1,7 +1,5 @@
 import revitron
 import unittest
-import os 
-import sys
 import revitrontests
 
 __context__ = 'zero-doc'

@@ -1,7 +1,5 @@
 import revitron
 import unittest
-import os 
-import sys
 from revitron import _
 import revitrontests
 
