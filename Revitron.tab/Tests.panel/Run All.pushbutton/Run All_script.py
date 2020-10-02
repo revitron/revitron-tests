@@ -7,7 +7,7 @@ import revitrontests
 
 __context__ = 'zero-doc'
 
-testsDir = dn(dn(__file__))
+testsDir = os.path.dirname(os.path.dirname(__file__))
 suite = unittest.TestSuite()
 
 for directory in glob.glob(testsDir + '\Tests.pulldown\*Tests.pushbutton'):
