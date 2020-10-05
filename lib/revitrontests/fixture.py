@@ -26,18 +26,52 @@ class Fixture:
 		t.Commit()
 		return wall
 
-	def createRoom(self):
-		halfWall = _(self.createWall([100, 90], [100, 100])).getFromType('Width') / 2
-		self.createWall([0 - halfWall, 0 - halfWall], [0 - halfWall, 10 + halfWall])
-		self.createWall([0 - halfWall, 0 - halfWall], [10 + halfWall, 0 - halfWall])
-		self.createWall([10 + halfWall, 10 + halfWall], [0 - halfWall, 10 + halfWall])
-		self.createWall([10 + halfWall, 10 + halfWall], [10 + halfWall, 0 - halfWall])
+	def createRoom(self, points = False, location = False):
 		t = revitron.DB.Transaction(self.doc, 'Add Room')
 		t.Start()
-		room = revitron.DOC.Create.NewRoom(self.level, revitron.DB.UV(4,6))
+		if not points:
+			p = revitron.DB.XYZ
+			points = [
+				p(0,0,0),
+				p(10,0,0),
+				p(10,10,0),
+				p(0,10,0)
+			]
+		if not location:
+			location = revitron.DB.UV(4,6)
+		curveArray = self.polygon(points)
+		self.doc.Create.NewRoomBoundaryLines(revitron.ACTIVEVIEW.SketchPlane, curveArray, revitron.ACTIVEVIEW)
+		room = revitron.DOC.Create.NewRoom(self.level, location)
 		t.Commit()
 		return room
+
+	def createRoomComplex(self):
+		p = revitron.DB.XYZ
+		points = [
+			p(3,0,0),
+			p(9,0,0),
+			p(9,4,0),
+			p(14,4,0),
+			p(14,9,0),
+			p(12,9,0),
+			p(12,12,0),
+			p(2,12,0),
+			p(2,7,0),
+			p(0,7,0),
+			p(0,2,0),
+			p(3,2,0)
+		]
+		location = revitron.DB.UV(4,6)
+		return self.createRoom(points, location)
 		
+	def polygon(self, points):
+		curveArray = revitron.DB.CurveArray()
+		for i in range(len(points)):
+			j = i - 1
+			line = revitron.DB.Line.CreateBound(points[j], points[i])
+			curveArray.Append(line)
+		return curveArray 
+  
 	def show(self, element):
 		uidoc = rui.UIDocument(self.doc)
 		uidoc.ShowElements(element)
