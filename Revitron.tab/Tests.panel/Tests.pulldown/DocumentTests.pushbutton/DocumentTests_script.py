@@ -19,18 +19,21 @@ class DocumentTests(revitrontests.RevitronTestCase):
 		self.assertEquals(config.get('test.2'), 'string')
 
 	def testGetDuplicateInstances(self):
-		family = self.fixture.createGenericModelFamily()
-		p1 = revitron.DB.XYZ(0,0,0)
-		p2 = revitron.DB.XYZ(0,0,0)
-		p3 = revitron.DB.XYZ(10,0,0)
-		instance1 = self.fixture.createGenericModelInstance(family, p1)
-		instance2 = self.fixture.createGenericModelInstance(family, p2)
-		instance3 = self.fixture.createGenericModelInstance(family, p3)
-		duplicatesOld = revitron.Document().getDuplicateInstances(True)
-		duplicatesYoung = revitron.Document().getDuplicateInstances()
-		toStr = revitrontests.idsToStr
-		self.assertEquals(str(instance1.Id.IntegerValue), toStr(duplicatesOld))
-		self.assertEquals(str(instance2.Id.IntegerValue), toStr(duplicatesYoung))
-		self.assertFalse(str(instance3.Id.IntegerValue) in toStr(duplicatesOld) + toStr(duplicatesYoung))
+		if revitron.REVIT_VERSION > '2018':
+			family = self.fixture.createGenericModelFamily()
+			p1 = revitron.DB.XYZ(0,0,0)
+			p2 = revitron.DB.XYZ(0,0,0)
+			p3 = revitron.DB.XYZ(10,0,0)
+			instance1 = self.fixture.createGenericModelInstance(family, p1)
+			instance2 = self.fixture.createGenericModelInstance(family, p2)
+			instance3 = self.fixture.createGenericModelInstance(family, p3)
+			duplicatesOld = revitron.Document().getDuplicateInstances(True)
+			duplicatesYoung = revitron.Document().getDuplicateInstances()
+			toStr = revitrontests.idsToStr
+			self.assertEquals(str(instance1.Id.IntegerValue), toStr(duplicatesOld))
+			self.assertEquals(str(instance2.Id.IntegerValue), toStr(duplicatesYoung))
+			self.assertFalse(str(instance3.Id.IntegerValue) in toStr(duplicatesOld) + toStr(duplicatesYoung))
+		else:
+			revitron.Log().warning('Method revitron.Document().getDuplicateInstances() requires Revit 2018 or newer!')
 
 revitrontests.run(DocumentTests)
