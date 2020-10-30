@@ -1,13 +1,23 @@
 import pyrevit
 import revitron
 import Autodesk.Revit.UI as rui
+import os
+import time
+import System
 from revitron import _
 
  
 class Fixture:
 	 
 	def __init__(self):
-		self.doc = pyrevit.revit.db.create.create_new_project(template=None, imperial=True)
+		doc = pyrevit.revit.db.create.create_new_project(template=None, imperial=True)
+		self.context(doc)
+		self.mainDoc = doc
+		
+	def context(self, doc = False):
+		if not doc:
+			doc = self.mainDoc
+		self.doc = doc
 		revitron.DOC = self.doc	
 		revitron.APP = self.doc.Application
 		self.level = revitron.Filter().byCategory('Levels').noTypes().getElements()[0]
@@ -15,6 +25,43 @@ class Fixture:
 
 	def closeDoc(self):
 		self.doc.Close(False)
+
+	def createGenericModelFamily(self):
+		temp = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), 'temp')
+		file = os.path.join(temp, '{}-genericModel-Revit{}.rfa'.format(int(time.time()), revitron.APP.VersionNumber))
+		try:
+			os.mkdir(temp)
+		except:
+			pass
+		famDoc = revitron.Create.familyDoc('Metric Generic Model', file)
+		self.context(famDoc)
+		p = revitron.DB.XYZ
+		points = [
+				p(0,0,0),
+				p(10,0,0),
+				p(10,10,0),
+				p(0,10,0)
+			]
+		sketchPlane = revitron.Filter().byCategory('Views').noTypes().getElements()[0].SketchPlane
+		crvArrArr = revitron.DB.CurveArrArray()
+		crvArrArr.Append(self.polygon(points))
+		transaction = revitron.Transaction(famDoc)
+		extrusion = revitron.Create.familyExtrusion(famDoc, crvArrArr, sketchPlane)
+		transaction.commit()
+		opt = revitron.DB.SaveAsOptions()
+		opt.OverwriteExistingFile = True
+		famDoc.SaveAs(file, opt)
+		loaded = famDoc.LoadFamily(self.mainDoc)
+		famDoc.Close(True)
+		self.context()
+		return loaded
+
+	def createGenericModelInstance(self, family, location):
+		for symbolId in family.GetFamilySymbolIds():
+			transaction = revitron.Transaction(suppressWarnings = True)
+			instance = revitron.Create.familyInstance(symbolId, location)
+			transaction.commit()
+			return instance
 
 	def createWall(self, xy1 = [0, 0], xy2 = [10, 10]):
 		p1 = revitron.DB.XYZ(xy1[0], xy1[1], 0)
@@ -63,7 +110,7 @@ class Fixture:
 		]
 		location = revitron.DB.UV(4,6)
 		return self.createRoom(points, location)
-		
+  
 	def polygon(self, points):
 		curveArray = revitron.DB.CurveArray()
 		for i in range(len(points)):
