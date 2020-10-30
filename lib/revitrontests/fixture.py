@@ -21,7 +21,7 @@ class Fixture:
 		revitron.DOC = self.doc	
 		revitron.APP = self.doc.Application
 		self.level = revitron.Filter().byCategory('Levels').noTypes().getElements()[0]
-		revitron.ACTIVEVIEW = revitron.Filter().byCategory('Views').noTypes().getElements()[0]
+		revitron.ACTIVE_VIEW = revitron.Filter().byCategory('Views').noTypes().getElements()[0]
 
 	def closeDoc(self):
 		self.doc.Close(False)
@@ -87,7 +87,7 @@ class Fixture:
 		if not location:
 			location = revitron.DB.UV(4,6)
 		curveArray = self.polygon(points)
-		self.doc.Create.NewRoomBoundaryLines(revitron.ACTIVEVIEW.SketchPlane, curveArray, revitron.ACTIVEVIEW)
+		self.doc.Create.NewRoomBoundaryLines(revitron.ACTIVE_VIEW.SketchPlane, curveArray, revitron.ACTIVE_VIEW)
 		room = revitron.DOC.Create.NewRoom(self.level, location)
 		t.Commit()
 		return room
