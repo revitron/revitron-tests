@@ -24,5 +24,11 @@ class ElementTests(revitrontests.RevitronTestCase):
 		t.commit()
 		self.assertEquals(_(wall).get('Test'), 'Value')
 		self.assertEquals(_(wall).get('Comments'), 'Some comment')
+
+	def testIsType(self):
+		for item in revitron.Filter().onlyTypes().getElements():
+			self.assertTrue(_(item).isType())
+		wall = self.fixture.createWall()
+		self.assertFalse(_(wall).isType())
  
 revitrontests.run(ElementTests)
