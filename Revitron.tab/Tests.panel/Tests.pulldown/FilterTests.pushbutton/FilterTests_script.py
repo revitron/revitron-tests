@@ -43,6 +43,12 @@ class FilterTests(revitrontests.RevitronTestCase):
 		self.assertEquals(toStr([w4.Id]), 
 			toStr(f().byStringEquals('Comments', 'test comment').noTypes().getElementIds()))
 
+		self.assertEquals(toStr([w2.Id, w3.Id]), 
+			toStr(f().byStringContainsOneInCsv('test', 'one, another').noTypes().getElementIds()))
+
+		self.assertEquals(toStr([w1.Id, w4.Id, w5.Id]), 
+			toStr(f().byCategory('Walls').byStringContainsOneInCsv('test', 'one, another', True).noTypes().getElementIds()))
+
 	def testRegexFilter(self):
 		family = self.fixture.createGenericModelFamily()
 		genModel = self.fixture.createGenericModelInstance(family, revitron.DB.XYZ(0,0,0))
