@@ -46,14 +46,17 @@ class ParameterTests(revitrontests.RevitronTestCase):
 
 	def testParameterTemplate(self):
      
+		wall = _(self.fixture.createWall())
 		info = _(revitron.DOC.ProjectInformation)
+
 		t = revitron.Transaction()
-		info.set('param1', 'Test & Text').set('param2', 10, 'Integer')
+		wall.set('param1', 'Test & Text').set('param2', 10, 'Integer')
+		info.set('projectParam', 'Project Name')
 		t.commit()
 
-		self.assertEquals('Test_Text-10',
-            revitron.ParameterTemplate(info.element, '{param1}-{param2}').render())
-		self.assertEquals('Test & Text-10',
-            revitron.ParameterTemplate(info.element, '{param1}-{param2}', False).render())
+		self.assertEquals('Project_Name: Test_Text-10',
+            revitron.ParameterTemplate(wall.element, '{%projectParam%}: {param1}-{param2}').render())
+		self.assertEquals('Project Name: Test & Text-10',
+            revitron.ParameterTemplate(wall.element, '{%projectParam%}: {param1}-{param2}', False).render())
 		
 revitrontests.run(ParameterTests)
