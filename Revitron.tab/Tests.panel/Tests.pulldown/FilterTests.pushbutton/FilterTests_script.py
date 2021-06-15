@@ -57,4 +57,26 @@ class FilterTests(revitrontests.RevitronTestCase):
 		self.assertEquals(toStr([genModel.Id]),
 			toStr(f().noTypes().byRegex('Family and Type', '\-genericModel\-Revit').getElementIds()))
 
+	def testNumericFilters(self):
+		w1 = self.fixture.createWall([0, 10], [10, 10])
+		w2 = self.fixture.createWall([0, 20], [10, 20])
+		t = revitron.Transaction()
+		_(w1).set('num', 1, 'Number')
+		_(w2).set('num', 5, 'Number')
+		t.commit()
+		f = revitron.Filter
+		toStr = revitrontests.idsToStr
+		self.assertEquals(toStr([w1.Id]), 
+			toStr(f().byCategory('Walls').byNumberIsEqual('num', 1).noTypes().getElementIds()))
+		self.assertEquals(toStr([w2.Id]), 
+			toStr(f().byCategory('Walls').byNumberIsEqual('num', '5').noTypes().getElementIds()))
+		self.assertEquals(toStr([w2.Id]), 
+			toStr(f().byCategory('Walls').byNumberIsGreater('num', 1).noTypes().getElementIds()))
+		self.assertEquals(toStr([w1.Id, w2.Id]), 
+			toStr(f().byCategory('Walls').byNumberIsGreaterOrEqual('num', 1).noTypes().getElementIds()))
+		self.assertEquals(toStr([w1.Id]), 
+			toStr(f().byCategory('Walls').byNumberIsLess('num', 5).noTypes().getElementIds()))
+		self.assertEquals(toStr([w1.Id, w2.Id]), 
+			toStr(f().byCategory('Walls').byNumberIsLessOrEqual('num', 5).noTypes().getElementIds()))
+
 revitrontests.run(FilterTests)
