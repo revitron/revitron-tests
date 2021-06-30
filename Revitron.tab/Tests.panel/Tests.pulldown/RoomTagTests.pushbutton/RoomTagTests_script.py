@@ -1,5 +1,4 @@
 import revitron
-import unittest
 from revitron import _
 import revitrontests
 

@@ -42,11 +42,9 @@ class Fixture:
 				p(10,10,0),
 				p(0,10,0)
 			]
-		sketchPlane = revitron.Filter().byCategory('Views').noTypes().getElements()[0].SketchPlane
 		crvArrArr = revitron.DB.CurveArrArray()
 		crvArrArr.Append(self.polygon(points))
 		transaction = revitron.Transaction(famDoc)
-		extrusion = revitron.Create.familyExtrusion(famDoc, crvArrArr, sketchPlane)
 		transaction.commit()
 		opt = revitron.DB.SaveAsOptions()
 		opt.OverwriteExistingFile = True

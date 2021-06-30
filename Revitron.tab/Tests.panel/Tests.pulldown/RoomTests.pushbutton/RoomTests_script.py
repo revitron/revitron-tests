@@ -1,5 +1,4 @@
 import revitron
-import unittest
 from revitron import _
 import revitrontests
 
@@ -7,12 +6,12 @@ __context__ = 'zero-doc'
 
 class RoomTests(revitrontests.RevitronTestCase):
 	
- 	def testRoomCenter(self):
+	def testRoomCenter(self):
 		room = self.fixture.createRoom()
 		center = _(room).getBboxCenter()
 		self.assertEquals(center.X, 5.0)
 		self.assertEquals(center.Y, 5.0)
-  
+
 	def testRoomPoints(self):
 		xyz = revitron.DB.XYZ
 		room = self.fixture.createRoom()

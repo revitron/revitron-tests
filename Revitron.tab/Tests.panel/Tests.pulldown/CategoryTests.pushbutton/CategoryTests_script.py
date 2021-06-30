@@ -1,5 +1,4 @@
 import revitron
-import unittest
 import revitrontests
 
 __context__ = 'zero-doc'
@@ -37,5 +36,6 @@ class CatergoryTests(revitrontests.RevitronTestCase):
 			revitron.BuiltInCategory('Analytical Beam Tags').get(), 
 			revitron.DB.BuiltInCategory.OST_BeamAnalyticalTags
 		)
+	
 	
 revitrontests.run(CatergoryTests)
