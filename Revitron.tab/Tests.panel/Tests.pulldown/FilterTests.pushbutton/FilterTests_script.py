@@ -22,13 +22,16 @@ class FilterTests(revitrontests.RevitronTestCase):
   		t.commit()
   
 		f = revitron.Filter
-		toStr = revitrontests.idsToStr		
+		toStr = revitrontests.idsToStr
 		
 		self.assertEquals(toStr([w1.Id, w2.Id]),
 			toStr(f().byStringContains('test', 'awesome').noTypes().getElementIds()))
 
 		self.assertEquals(toStr([w4.Id, w5.Id]),
 			toStr(f().byCategory('Walls').byStringContains('test', 'wall', True).noTypes().getElementIds()))
+
+		self.assertEquals(toStr([w4.Id, w5.Id]),
+			toStr(f().byCategory('OST_Walls').byStringContains('test', 'wall', True).noTypes().getElementIds()))
  
 		self.assertEquals(toStr([w3.Id]), 
 			toStr(f().byStringBeginsWith('test', 'and one').noTypes().getElementIds()))
